@@ -1,14 +1,18 @@
 data "aws_availability_zones" "available" {}
 
 locals {
-  vpc_cidr        = "10.0.0.0/16"
-  Environment     = "prod"
-  Owner           = "SquareOps"
-  name            = "ASG-SquareOps"
-  region          = "us-west-2"
-  vpc_id          = "vpc-0b3f45c5755ae1d3e"
-  enabled_metrics = ["GroupMinSize", "GroupMaxSize", "GroupDesiredCapacity", "GroupInServiceInstances", "GroupPendingInstances", "GroupStandbyInstances", "GroupTerminatingInstances", "GroupTotalInstances"]
-  azs             = slice(data.aws_availability_zones.available.names, 0, 3)
+  vpc_cidr                  = "10.0.0.0/16"
+  Environment               = "prod"
+  Owner                     = "SquareOps"
+  name                      = "ASG-SquareOps"
+  min_size                  = "1"
+  max_size                  = "2"
+  desired_capacity          = "1"
+  wait_for_capacity_timeout = "0"
+  region                    = "us-west-2"
+  vpc_id                    = "vpc-0b3f45c5755ae1d3e"
+  enabled_metrics           = ["GroupMinSize", "GroupMaxSize", "GroupDesiredCapacity", "GroupInServiceInstances", "GroupPendingInstances", "GroupStandbyInstances", "GroupTerminatingInstances", "GroupTotalInstances"]
+  azs                       = slice(data.aws_availability_zones.available.names, 0, 3)
 }
 
 
@@ -20,10 +24,10 @@ module "asg" {
   vpc_zone_identifier       = ["subnet-0b1bf9f367133a41d", "subnet-0558682ffd7fa198e"]
   enabled_metrics           = local.enabled_metrics
   instance_name             = "final-${local.name}"
-  min_size                  = 1
-  max_size                  = 2
-  desired_capacity          = 1
-  wait_for_capacity_timeout = 0
+  min_size                  = local.min_size
+  max_size                  = local.max_size
+  desired_capacity          = local.desired_capacity
+  wait_for_capacity_timeout = local.wait_for_capacity_timeout
   default_instance_warmup   = 300
   target_group_arns         = module.alb.target_group_arns
 
