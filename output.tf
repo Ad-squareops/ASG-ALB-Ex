@@ -98,6 +98,10 @@ output "target_group_attachments" {
   value       = module.asg.target_group_attachments
 }
 
+output "key_pair_name" {
+  description = "The key pair name."
+  value       = module.asg.key_pair_name
+}
 
 output "iam_instance_profile_arn" {
   description = "The ARN of the instance Profile"
@@ -106,7 +110,5 @@ output "iam_instance_profile_arn" {
 
 output "iam_instance_profile_name" {
   description = "The name of the instance Profile"
-  value       = module.asg.iam_role_name
+  value       = module.asg.iam_instance_profile_name
 }
-
-
